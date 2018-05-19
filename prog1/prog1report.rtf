@@ -1,0 +1,54 @@
+{\rtf1\ansi\ansicpg1252\cocoartf1504\cocoasubrtf830
+{\fonttbl\f0\fswiss\fcharset0 Helvetica;}
+{\colortbl;\red255\green255\blue255;}
+{\*\expandedcolortbl;;}
+\margl1440\margr1440\vieww12600\viewh8320\viewkind0
+\pard\tx720\tx1440\tx2160\tx2880\tx3600\tx4320\tx5040\tx5760\tx6480\tx7200\tx7920\tx8640\pardirnatural\partightenfactor0
+
+\f0\b\fs24 \cf0 \ul \ulc0 How to Test Shell.java\
+\
+
+\b0 \ulnone 1) From the command-line console, open or "cd" to the directory containing the ThreadOS files, making sure that my Shell.java file is in this directory.\
+2) Compile the Shell.java file using "javac Shell.java" in order to make sure that it actually compiles, and we have the up-to-date Shell.class file.\
+3) We load up ThreadOS using "java Boot". \
+4) We then load up our Shell program within ThreadOS using "l Shell".\
+5) The Shell program should now be running, and can take commands.\
+6) In order to test the Shell program, we just type in the four PingPong test cases on the Shell command line one-by-one.\
+\
+
+\b \ul Explaining Processes.cpp's Algorithm\
+\
+
+\b0 \ulnone Processes.cpp takes in an argument, argv[1] from the command line. It uses this to execute grep later in the program.\
+\
+First I set up the variables, read and write ends of the pipe, the process ID tracker, two file descriptors. \
+\
+I make sure that there are two arguments from the command line. One: "./processes" and two: some term for argv[1].\
+\
+I then fork a new process, the child. After that I create the first pipe, making it only accessible to the child and future processes. While in the child process, I fork the grandchild, and create the second pipe - making it only accessible to the grandchild and great-grandchild.\
+\
+While in the grandchild, I fork the great-grandchild. In the great-grandchild process, I close pipe 1 completely because this is only used between the child and the grandchild, then I close the read side of pipe 2 because it doesn't need it. I then redirect the great-grandchild's stdout to the write end of pipe 2. After that, the great-grandchild executes "ps -A".\
+\
+Going back to the grandchild process, I close the read end of pipe 1 and the write end of pipe 2. I then redirect its stdout to the write end of pipe 1 and its stdin from the read end of pipe 2, so that it executes grep [argv[1]] based on the data that the great-grandchild wrote to pipe 2.\
+\
+Going back to the child process, I close the write end of pipe 1, and redirect child's stdin from the read end of pipe 1 so that it executes "wc -l" based on the data that the grandchild wrote to pipe 1.\
+\
+During this whole time, the parent waits for the child processes to execute before exiting succesfully.\
+
+\b \ul \
+Explaining Shell.java's Algorithm\
+\
+
+\b0 \ulnone The main Shell prompt line is being executed from the run() method. I have two class variable; line: keeps track of shell command line number; loop: a boolean that will keep prompting the shell command line while true.\
+\
+For every loop on the command line prompt while loop, the program prompts with "Shell[num]%" followed by an cin method asking for a keyboard input through a stringbuffer. We then convert this buffer into a string for further processing. If the user input is empty, we loop again. If the input is "exit", we switch loop to false to stop looping the prompt, and then reach the exit code outside the loop. If it is a non-empty input, we parse it further, splitting it using ";" as a delimiter as means of sequential execution. The resulting strings, may it be a single command or multiple concatenated by "&", will be sent to execute() to be processed. Single commands will execute by themselves, while concurrent commands (&) will be executed concurrently within one execute() call.\
+\
+While in the execute method, we take in two params; the string of command; and a vector of thread IDs. The vector may be null - this would mean that the commandLine param was not a result of the shell program asking for more input due to the previous one ending in "&". If the vector is null, we create a new one with a size of 1, rather than the default 10, because we need to accurately keep track of it's size when we are terminating the children later on.\
+\
+The commandLine param in execute() is further processed, and split using "&" as a delimeter. If a resulting string is empty, we ignore it; if it is "exit", we switch loop to false in order to stop the shell command line prompt, then we terminate children processes and execute exit back in run(); anything else will be converted into a string array so that it can be passed to exec() to be executed. Each resulting threadID that were succesful in executing is then added to the vector.\
+\
+After the parsing of commandLine, we check if the commandLine ends in "&". If so, we don't want to terminate the child threads just yet although we've already initialized their execution. We first want to keep prompting the shell prompt line for more user input - we do this using the concurrentCommands(), passing in the vector so that we don't lose the thread IDs that we still need to terminate later on.\
+\
+In the concurrentCommands() is another while loop of a shell command line prompt. It's very similar with the one in run() but there are a few differences. We create another boolean that loops the while loop while true. We ask for input. If empty, we keep looping. If exit, we switch both boolean to false, to turn off all the command line prompt loops. If it is a valid command, we stop this loop, and pass back the input as well as the concurrentCommands's vector param back to execute(). Once back to execute, we parse and process, and execute valid commands. Once succesful, we call the terminateChildren() method passing in the vector.\
+\
+In the terminateChildren() method, we keep running the join(), removing the terminating threadIDs of the child threads from the vector until the vector is empty. After this, we should be back in run(), running exit().}

@@ -1,0 +1,5 @@
+SyncQueue.java implements a Java monitor as support in implementing the SysLib.join() and SysLib.exit() system calls so that calling threads can sleep and be tracked through the SyncQueue while waiting for its child threads to terminate.
+
+SyncQueue.java contains a queue(array) of conditions that threads may be waiting on in order to wake up. Each element in the queue contains a queueNode object (QueueNode.java) which holds another vector of all the threads waiting on the same condition. QueueNode.java also implements the sleep() and wakeUp() functions of the threads.
+
+A calling thread (parent thread) puts itself to sleep through SyncQueue.enqueueAndSleep() which calls on QueueNode.sleep(). It'll sleep through wait() and will be woken up when a child thread under the same condition is enqueued and also woken up. Upon exiting, the woken up child thread then does a notify() which wakes up the parent thread.

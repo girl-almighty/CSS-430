@@ -1,0 +1,25 @@
+Script started on Sun 08 Apr 2018 05:54:25 PM PDT
+]0;irisfvrl@uw1-320-08: ~[01;32mirisfvrl@uw1-320-08[00m:[01;34m~[00m$ ls
+[0m[01;34m430[0m  examples.desktop  processes_output  [01;34mthreados[0m
+]0;irisfvrl@uw1-320-08: ~[01;32mirisfvrl@uw1-320-08[00m:[01;34m~[00m$ pwd
+/home/NETID/irisfvrl
+]0;irisfvrl@uw1-320-08: ~[01;32mirisfvrl@uw1-320-08[00m:[01;34m~[00m$ cd 430
+]0;irisfvrl@uw1-320-08: ~/430[01;32mirisfvrl@uw1-320-08[00m:[01;34m~/430[00m$ ls
+processes.cpp
+]0;irisfvrl@uw1-320-08: ~/430[01;32mirisfvrl@uw1-320-08[00m:[01;34m~/430[00m$ ja[K[Kg++ processes.cpp -o processes
+]0;irisfvrl@uw1-320-08: ~/430[01;32mirisfvrl@uw1-320-08[00m:[01;34m~/430[00m$ ./processes kworker
+44
+]0;irisfvrl@uw1-320-08: ~/430[01;32mirisfvrl@uw1-320-08[00m:[01;34m~/430[00m$ ps -A | grep kworker | wc -l
+44
+]0;irisfvrl@uw1-320-08: ~/430[01;32mirisfvrl@uw1-320-08[00m:[01;34m~/430[00m$ ./processes sshd
+4
+]0;irisfvrl@uw1-320-08: ~/430[01;32mirisfvrl@uw1-320-08[00m:[01;34m~/430[00m$ ps -A | grep sshd | wc -l
+4
+]0;irisfvrl@uw1-320-08: ~/430[01;32mirisfvrl@uw1-320-08[00m:[01;34m~/430[00m$ .p[K/processes sci[Ksi
+12
+]0;irisfvrl@uw1-320-08: ~/430[01;32mirisfvrl@uw1-320-08[00m:[01;34m~/430[00m$ ps -A |gre[K[K [K[K grep sci[Ksi | wc -l
+12
+]0;irisfvrl@uw1-320-08: ~/430[01;32mirisfvrl@uw1-320-08[00m:[01;34m~/430[00m$ exit
+exit
+
+Script done on Sun 08 Apr 2018 05:56:23 PM PDT

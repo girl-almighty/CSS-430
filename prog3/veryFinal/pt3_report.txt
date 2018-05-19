@@ -1,0 +1,10 @@
+old kernel - 99020 msec
+new kernel - 95658 msec
+
+The old kernel which utilizes spin/busy waiting ran for a span of 99020 msec with 4 pairs of threads.
+The new kernel which utilizes the syncQueue monitor ran for a span of 95658 msec with 4 pairs of threads.
+The new kernel definitely performs better and faster. 
+
+When running both kernels at 4 pairs of child threads, the new kernel ran 3.4% faster than the old kernel. This is because in the old kernel, threads waiting for the disk to do their job are constantly repeatedly checking if its request has been accepted followed by another repeated checking if its request has been executed and served. This constant spin loop uses CPU resources, taking away resources from threads who are currently executing and doing their job. Threads that are actually in the process of doing their job have to take longer time to finish since part of their resources is being used by the spin loops.
+
+The new kernel on the other hand utilized the java monitor to actually put waiting threads to sleep. This threads don't use up resources when asleep, allowing ready threads to use up as much of the CPU resources as possible. This allows ready threads to finish faster, thus minimizing the total amount of time the child threads take to finish doing their jobs.
